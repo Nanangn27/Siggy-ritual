@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>SIGGY Ritual • The Void Companion</title>
+
+<script
+src="https://cdn.jsdelivr.net/npm/ethers@6.13.1/dist/ethers.umd.min.js">
+</script>
+
+<script
+src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js">
+</script>
+
+
+<style>
+
+.send-btn{
+  width:100%;
+  height:55px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(90deg,#7b2cff,#b03cff);
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.send-btn:active{
+  transform:scale(.98);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+...
+
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#120021;
+color:white;
+min-height:100vh;
+padding-bottom:90px;
+
+position:relative;
+overflow-x:hidden;
+}
+body::after{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:0;
+
+background:
+radial-gradient(circle at 20% 30%, rgba(177,76,255,.20), transparent 35%),
+radial-gradient(circle at 80% 20%, rgba(120,50,255,.18), transparent 40%),
+radial-gradient(circle at 50% 80%, rgba(177,76,255,.15), transparent 35%);
+
+animation:nebulaPulse 12s ease-in-out infinite;
+}
+
+@keyframes nebulaPulse{
+0%,100%{
+opacity:.6;
+transform:scale(1);
+}
+50%{
+opacity:1;
+transform:scale(1.1);
+}
+}
+.page{
+display:none;
+padding:20px;
+position:relative;
+z-index:1;
+}
+
+.page.active{
+display:block;
+}
+
+.logo{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  filter:drop-shadow(0 0 15px #b14cff);
+}
+.header-wrap{
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:15px;
+}
+
+.title{
+  margin:0;
+  font-size:30px;
+  font-weight:bold;
+  line-height:1;
+  color:#ffffff;
+
+  text-shadow:
+    0 0 5px #ffffff,
+    0 0 15px #d18fff,
+    0 0 30px #b14cff,
+    0 0 60px #7a00ff;
+}
+
+.subtitle{
+font-size:14px;
+color:#b14cff;
+opacity:.9;
+margin-top:4px;
+letter-spacing:1px;
+text-transform:uppercase;
+}
+.card{
+background:
+radial-gradient(
+circle at center,
+rgba(177,76,255,.08) 0%,
+rgba(90,20,150,.05) 25%,
+rgba(27,8,47,.98) 60%,
+#120320 100%
+);
+
+border:1px solid rgba(255,255,255,.08);
+border-radius:24px;
+padding:12px;
+
+max-width:600px;
+margin:15px auto;
+
+position:relative;
+overflow:hidden;
+
+box-shadow:0 0 25px rgba(177,76,255,.12);
+} 
+#shareCard{
+  width:500px;
+  min-width:500px;
+  max-width:500px;
+  
+  height:650px;
+min-height:650px;
+
+  margin:auto;
+
+border:1px solid rgba(177,76,255,.25);
+
+box-shadow:
+0 0 40px rgba(177,76,255,.20),
+0 0 80px rgba(177,76,255,.12),
+inset 0 0 25px rgba(177,76,255,.08);
+}
+#shareCard::before{
+content:"VOID";
+position:absolute;
+top:55%;
+left:50%;
+transform:translate(-50%,-50%) rotate(-20deg);
+
+font-size:180px;
+font-weight:bold;
+letter-spacing:8px;
+
+color:rgba(177,76,255,.12);
+pointer-events:none;
+}
+#signaturePad{
+width:100%;
+height:120px;
+max-width:500px;
+display:block;
+margin-left:auto;
+margin-right:auto;
+background:#120320;
+border:1px solid rgba(255,255,255,.15);
+border-radius:12px;
+margin-bottom:10px;
+touch-action:none;
+}
+#siggySeal{
+text-align:center;
+font-size:10px;
+letter-spacing:3px;
+color:rgba(217,179,255,.65);
+text-transform:uppercase;
+margin-top:4px;
+margin-bottom:10px;
+text-shadow:0 0 10px rgba(177,76,255,.3);
+}
+.siggy{
+width:180px;
+display:block;
+margin:auto;
+margin-bottom:5px;
+filter:drop-shadow(0 0 15px rgba(177,76,255,.4));
+transition:all .3s ease;
+cursor:pointer;
+animation:floatSiggy 3s ease-in-out infinite;
+-webkit-tap-highlight-color:transparent;
+outline:none;
+user-select:none;
+}
+
+#shareCard .siggy{
+width:120px;
+}
+@keyframes floatSiggy{
+  0%{
+    transform:translateY(0px);
+  }
+
+  50%{
+    transform:translateY(-8px);
+  }
+
+  100%{
+    transform:translateY(0px);
+  }
+}
+.void-particle{
+position:fixed;
+width:12px;
+height:12px;
+border-radius:50%;
+background:#b14cff;
+pointer-events:none;
+z-index:9999;
+box-shadow:0 0 15px #b14cff;
+animation:voidParticle .7s ease-out forwards;
+}
+
+@keyframes voidParticle{
+0%{
+opacity:1;
+transform:translate(0,0) scale(1);
+}
+100%{
+opacity:0;
+transform:translate(var(--x),var(--y)) scale(0);
+}
+}
+.btn{
+width:100%;
+padding:14px;
+border:none;
+border-radius:16px;
+background:#8f2dff;
+color:white;
+font-weight:bold;
+margin-top:10px;
+}
+
+.feed-grid{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:10px;
+margin-top:15px;
+}
+
+.feed-btn{
+padding:14px;
+border:none;
+border-radius:16px;
+background:#7d22ff;
+color:white;
+
+transition:all .15s ease;
+cursor:pointer;
+-webkit-tap-highlight-color:transparent; 
+}
+button{
+transition:all .15s ease;
+cursor:pointer;
+-webkit-tap-highlight-color:transparent;
+}
+
+button:active{
+transform:scale(.95);
+filter:brightness(1.2);
+}
+.stats{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:6px;
+margin-top:8px;
+}
+
+.stat{
+background:#2a1045;
+padding:8px;
+border-radius:12px;
+font-size:14px;
+text-align:center;
+
+border:1px solid rgba(177,76,255,.15);
+
+box-shadow:
+0 0 15px rgba(177,76,255,.08);
+
+transition:.3s;
+}
+
+input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+background:#2a1045;
+color:white;
+margin-top:10px;
+}
+
+#profilePreview{
+width:90px;
+height:90px;
+border-radius:50%;
+object-fit:cover;
+display:block;
+margin:auto;
+
+border:4px solid #b14cff;
+
+box-shadow:
+0 0 20px rgba(177,76,255,.6),
+0 0 40px rgba(177,76,255,.3);
+}
+
+.nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+height:75px;
+background:#1c082f;
+display:flex;
+justify-content:space-around;
+align-items:center;
+
+border-top:1px solid rgba(177,76,255,.25);
+box-shadow:0 -5px 25px rgba(177,76,255,.2);
+}
+
+.nav button{
+background:none;
+border:none;
+color:white;
+font-size:15px;
+
+transition:all .2s ease;
+}
+
+.nav button:active{
+transform:scale(.9);
+color:#b14cff;
+text-shadow:0 0 12px #b14cff;
+}
+
+#aiReply{
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.6;
+  font-size: 16px;
+  padding: 12px;
+  text-align:center;
+  color:#d9b3ff;
+}
+
+
+@media (max-width:768px){
+  #aiReply{
+    font-size:15px;
+  }
+}
+
+@media (min-width:769px){
+  #aiReply{
+    font-size:17px;
+    max-width:900px;
+    margin:auto;
+  }
+}
+.builtby{
+  text-align:center;
+  margin:12px 0;
+  color:#ccc;
+  font-size:14px;
+}
+
+.builtby a{
+  color:#b14cff;
+  text-decoration:none;
+  font-weight:bold;
+}
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:url("assets/ritual_logo.png") center center no-repeat;
+background-size:280px;
+
+opacity:.08;
+pointer-events:none;
+z-index:0;
+}
+
+body{
+position:relative;
+}
+@media (max-width:768px){
+body::before{
+background-position:center 40%;
+}
+}
+
+@media (min-width:769px){
+body::before{
+background-position:center 50%;
+background-size:340px;
+}
+}
+@media (min-width:769px){
+
+.card{
+max-width:700px;
+margin:auto;
+}
+
+.siggy{
+width:300px;
+}
+
+}
+.xp-bar{
+height:12px;
+background:rgba(255,255,255,.08);
+border-radius:20px;
+overflow:hidden;
+margin:10px 0;
+}
+
+#energyBar{
+height:100%;
+width:80%;
+background:linear-gradient(90deg,#7b2cff,#b14cff);
+box-shadow:0 0 15px #b14cff;
+border-radius:20px;
+animation:energyGlow 2s ease-in-out infinite;
+}
+
+@keyframes energyGlow{
+0%,100%{
+filter:brightness(1);
+}
+50%{
+filter:brightness(1.4);
+}
+}
+.ritual-banner{
+    position:fixed;
+    width:260px;
+    opacity:.08;
+    pointer-events:none;
+    z-index:0;
+}
+
+.ritual1{
+    top:15px;
+    left:-300px;
+    width:350px;
+    opacity:.08;
+    animation:ritualMove1 50s linear infinite;
+}
+
+.ritual2{
+    display:none;
+}
+
+@keyframes ritualMove1{
+    from{transform:translateX(0);}
+    to{transform:translateX(calc(100vw + 600px));}
+}
+
+@keyframes ritualMove2{
+    from{transform:translateX(0);}
+    to{transform:translateX(calc(-100vw - 600px));}
+}
+</style>
+
+</head>
+
+<body>
+
+<img src="assets/ritual-banner.png"
+class="ritual-banner ritual1">
+
+<img src="assets/ritual-banner.png"
+class="ritual-banner ritual2">
+
+<div
+id="home"
+class="page active"
+>
+
+<div class="header-wrap">
+
+<img
+src="assets/ritual_logo.png"
+class="logo"
+>
+
+<div class="title-wrap">
+
+<h2 class="title">
+SIGGY Ritual
+</h2>
+
+<div class="subtitle">
+The Void Companion
+</div>
+
+</div>
+
+<div
+id="walletHeader"
+onclick="connectWallet()"
+style="
+margin-left:auto;
+background:#8a2be2;
+padding:8px 14px;
+border-radius:20px;
+font-size:12px;
+font-weight:bold;
+cursor:pointer;
+color:white;
+white-space:nowrap;
+">
+Connect Wallet
+</div>
+</div>
+
+<div
+class="card"
+>
+
+<img
+id="siggyMood"
+src="assets/siggy_idle.png"
+class="siggy"
+onclick="randomMood()"
+>
+
+<h2 style="
+text-align:center;
+text-shadow:0 0 20px rgba(177,76,255,.8);
+">
+Void Siggy
+</h2>
+
+<div style="
+text-align:center;
+color:#d98cff;
+font-size:13px;
+font-weight:bold;
+letter-spacing:4px;
+text-transform:uppercase;
+text-shadow:0 0 15px rgba(177,76,255,.8);
+margin-top:5px;
+">
+VOID WALKER
+</div>
+
+<div style="
+width:70px;
+height:2px;
+background:#b14cff;
+margin:10px auto 15px auto;
+box-shadow:0 0 15px #b14cff;
+"></div>
+<p
+id="moodText"
+style="
+text-align:center;
+color:#d9b3ff;
+font-size:13px;
+font-style:italic;
+opacity:.9;
+"
+>
+Idle Mode
+</p>
+<p
+id="petCount"
+style="text-align:center;color:#d9b3ff;"
+>
+🐾 Pets: 0
+</p>
+<div id="aiReply">
+✨ The Void watches...
+</div>
+<div
+class="feed-grid"
+>
+
+<button
+class="feed-btn"
+onclick="feedSiggy('0.0001')"
+>
+Snack
+</button>
+
+<button
+class="feed-btn"
+onclick="feedSiggy('0.005')"
+>
+Feast
+</button>
+
+<button
+class="feed-btn"
+onclick="feedSiggy('0.001')"
+>
+Chaos
+</button>
+
+</div>
+
+</div>
+<div id="siggyChat">
+  <input id="aiInput" placeholder="Ask SIGGY anything...">
+  <button class="send-btn" onclick="askSiggy()">
+    Send
+  </button>
+</div>
+</div>
+<!-- WALLET -->
+
+<div
+id="wallet"
+class="page"
+>
+
+<h2>
+Wallet
+</h2>
+
+<div
+class="card"
+>
+
+<h3
+id="walletAddress"
+>
+Not Connected
+</h3>
+
+<h1
+id="walletBalance"
+>
+0 RIT
+</h1>
+<canvas id="walletQR"></canvas>
+<button
+class="btn"
+onclick="connectWallet()"
+>
+Connect Wallet
+</button>
+
+<button
+class="btn"
+onclick="disconnectWallet()"
+>
+Disconnect Wallet
+</button>
+<input
+id="sendAddress"
+placeholder="Receiver Address">
+
+<input
+id="sendAmount"
+placeholder="Amount RITUAL">
+
+<button
+class="btn"
+onclick="sendRIT()">
+Send RITUAL
+</button>
+
+<button
+class="btn"
+onclick="copyAddress()">
+Copy Wallet Address
+</button>
+
+</div>
+
+<div
+class="card"
+>
+
+<h3>
+Recent Activity
+</h3>
+
+<div
+id="recentActivity"
+>
+No recent activity
+</div>
+
+</div>
+
+</div>
+
+<!-- SHARE -->
+
+<div
+id="share"
+class="page"
+>
+
+<h2 style="text-align:center;">
+Void Siggy Card
+</h2>
+
+<div
+id="shareCard"
+class="card"
+>
+<div style="
+position:absolute;
+top:15px;
+right:15px;
+background:linear-gradient(45deg,#b14cff,#7a00ff);
+padding:6px 12px;
+border-radius:999px;
+font-size:10px;
+font-weight:bold;
+color:white;
+box-shadow:0 0 15px rgba(177,76,255,.5);
+">
+LEGENDARY
+</div>
+<img
+src="assets/ritual_logo.png"
+class="logo"
+>
+
+<img
+id="shareMood"
+src="assets/siggy_idle.png"
+class="siggy"
+>
+
+<h3
+style="text-align:center"
+>
+Void Siggy
+</h3>
+
+<img
+id="profilePreview"
+src="assets/default-avatar.png"
+style="
+width:80px;
+height:80px;
+border-radius:50%;
+object-fit:cover;
+display:block;
+margin:10px auto;
+">
+
+<h4
+id="shareUsername"
+style="
+text-align:center;
+font-size:22px;
+font-weight:bold;
+letter-spacing:1px;
+text-shadow:
+0 0 10px rgba(177,76,255,.8),
+0 0 25px rgba(177,76,255,.4);
+"
+>
+Username
+</h4>
+
+<div
+class="stats"
+>
+
+<div
+class="stat"
+>
+XP
+<br>
+<span id="xpValue">
+0
+</span>
+</div>
+
+<div
+class="stat"
+>
+BALANCE
+<br>
+<span id="shareBalance">
+0 RIT
+</span>
+</div>
+
+<div
+class="stat"
+>
+TX OUT
+<br>
+<span id="shareTx">
+0
+</span>
+</div>
+
+<div
+class="stat"
+>
+SIGGY LVL
+<br>
+<span id="shareActivity">
+0
+</span>
+</div>
+
+</div>
+
+</div>
+
+<input
+id="username"
+placeholder="Enter Username..."
+>
+
+<input
+type="file"
+id="profileUpload"
+accept="image/*"
+>
+
+<h3>Signature</h3>
+
+<canvas
+id="signaturePad"
+width="500"
+height="120">
+</canvas>
+
+<div id="siggySeal">
+POWERED BY SIGGY RITUAL
+</div>
+
+<button onclick="clearSignature()">
+Clear Signature
+</button>
+
+<button
+class="btn"
+onclick="saveCard()"
+>
+Save Image
+</button>
+
+</div>
+
+<!-- SETTINGS -->
+
+<div
+id="settings"
+class="page"
+>
+
+<h2>⚙️ SIGGY SETTINGS</h2>
+<p class="subtitle">Manage the Void Companion</p>
+
+<div
+class="card"
+>
+
+<h3>
+Current Level
+</h3>
+
+<p id="levelValue">
+1
+</p>
+
+<br>
+
+<h3>
+Current XP
+</h3>
+
+<p id="xpInfo">
+0
+</p>
+
+<br>
+
+<h3>
+Current Mood
+</h3>
+
+<p id="moodInfo">
+Idle
+</p>
+
+<br>
+
+<h3>🔮 Void Energy</h3>
+<div class="xp-bar">
+<div id="energyBar" style="width:80%"></div>
+</div>
+
+<button
+class="btn"
+onclick="randomMood()"
+>
+Random Mood
+</button>
+<div class="card">
+
+<h3>Siggy Name</h3>
+<input id="siggyName" placeholder="Void Siggy">
+
+<h3>Default Mood</h3>
+<select id="defaultMood">
+<option>Idle</option>
+<option>Happy</option>
+<option>Sad</option>
+<option>Chaos</option>
+</select>
+
+<button
+class="btn"
+onclick="saveSettings()">
+Save Settings
+</button>
+
+</div>
+</div>
+
+</div>
+
+<!-- NAVIGATION -->
+<div class="builtby">
+  ⚡ Built by
+  <a href="https://x.com/Nanangn27" target="_blank">
+    N G
+  </a>
+</div>
+<div
+class="nav"
+>
+
+<button
+onclick="showPage('home')"
+>
+Home
+</button>
+
+<button
+onclick="showPage('wallet')"
+>
+Wallet
+</button>
+
+<button
+onclick="showPage('share')"
+>
+Share
+</button>
+
+<button
+onclick="showPage('settings')"
+>
+Settings
+</button>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.1/dist/ethers.umd.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<script src="app.js"></script>
+<div id="imagePreviewModal"
+style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.9);
+z-index:9999;
+text-align:center;
+">
+
+<img
+id="previewImage"
+onclick="window.open(this.src,'_blank')"
+style="
+max-width:95%;
+max-height:80%;
+margin-top:40px;
+">
+
+<br><br>
+
+<button
+class="btn"
+onclick="document.getElementById('imagePreviewModal').style.display='none';">
+Close
+</button>
+<button
+class="btn"
+onclick="
+const a=document.createElement('a');
+a.href=document.getElementById('previewImage').src;
+a.download='siggy-card.png';
+a.click();
+">
+Download Image
+</button>
+<p style="color:white">
+Long press image to save
+</p>
+
+</div>
+</body>
+
+</html>
+
