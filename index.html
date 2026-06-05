@@ -484,25 +484,24 @@ margin-top:15px;
 
 
 .feed-btn{
+    padding:14px;
+    border:none;
+    border-radius:16px;
 
-padding:14px;
+    background:linear-gradient(90deg,#b14cff,#7d22ff);
 
-border:none;
+    color:#ffffff;
 
-border-radius:16px;
+    box-shadow:
+        0 0 12px rgba(177,76,255,.5),
+        0 0 25px rgba(177,76,255,.25);
 
-background:#7d22ff;
+    font-weight:600;
+    letter-spacing:.5px;
 
-color:white;
-
-
-
-transition:all .15s ease;
-
-cursor:pointer;
-
--webkit-tap-highlight-color:transparent; 
-
+    transition:all .15s ease;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
 }
 
 button{
@@ -518,11 +517,8 @@ cursor:pointer;
 
 
 button:active{
-
-transform:scale(.95);
-
-filter:brightness(1.2);
-
+    transform:scale(.96);
+    filter:brightness(1.35);
 }
 
 .stats{
@@ -680,23 +676,20 @@ text-shadow:0 0 12px #b14cff;
 
 
 #aiReply{
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.6;
+    font-size: 16px;
+    padding: 12px;
+    text-align: center;
 
-  white-space: pre-wrap;
+    color:#f5eaff;
+    text-shadow:
+        0 0 8px rgba(177,76,255,.8),
+        0 0 15px rgba(177,76,255,.4);
 
-  word-wrap: break-word;
-
-  overflow-wrap: break-word;
-
-  line-height: 1.6;
-
-  font-size: 16px;
-
-  padding: 12px;
-
-  text-align:center;
-
-  color:#d9b3ff;
-
+    font-weight:600;
 }
 
 
@@ -1047,7 +1040,8 @@ style="
 
 margin-left:auto;
 
-background:#8a2be2;
+background:linear-gradient(90deg,#b14cff,#7a00ff);
+box-shadow:0 0 15px rgba(177,76,255,.5);
 
 padding:8px 14px;
 
