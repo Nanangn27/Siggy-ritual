@@ -1304,3 +1304,17 @@ document.getElementById("siggyName").value;
 }
 alert("Settings Saved");
 }
+function openRevoke(){
+
+    const go = confirm(
+        "⚠️ Void Security Check\n\nOpen Revoke.cash to review active token approvals?"
+    );
+
+    if(go){
+        window.open(
+            "https://revoke.cash",
+            "_blank"
+        );
+    }
+
+}
