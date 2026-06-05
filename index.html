@@ -990,7 +990,43 @@ filter:brightness(1.4);
     to{transform:translateX(calc(-100vw - 600px));}
 
 }
+#sigilPage{
+    text-align:center;
+    padding-top:50px;
+}
 
+#sigilLogo{
+    width:220px;
+    max-width:70vw;
+
+    animation:sigilSpin 6s linear infinite;
+
+    filter:drop-shadow(0 0 25px #b14cff);
+}
+
+#sigilStatus{
+    color:white;
+    margin-top:25px;
+    font-size:22px;
+
+    text-shadow:0 0 15px rgba(177,76,255,.8);
+}
+
+@keyframes sigilSpin{
+
+    0%{
+        transform:
+        perspective(800px)
+        rotateY(0deg);
+    }
+
+    100%{
+        transform:
+        perspective(800px)
+        rotateY(360deg);
+    }
+
+}
 </style>
 
 
@@ -1428,7 +1464,24 @@ No recent activity
 
 <!-- SHARE -->
 
+<div
+id="sigil"
+class="page"
+style="display:none;">
 
+    <div class="card">
+
+        <img
+        id="sigilLogo"
+        src="assets/logo-game.png">
+
+        <h2 id="sigilStatus">
+            The Sigil Awakens...
+        </h2>
+
+    </div>
+
+</div>
 
 <div
 
