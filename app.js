@@ -1332,3 +1332,16 @@ function openRevoke(){
     }
 
 }
+function shuffleSigil(){
+
+    const status =
+    document.getElementById(
+        "sigilStatus"
+    );
+
+    if(status){
+        status.innerText =
+        "✨ Ritual Beginning...";
+    }
+
+}
