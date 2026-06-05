@@ -194,7 +194,21 @@ addActivity(
 );
 
 }
+function walletMenu(){
 
+    if(!account){
+        connectWallet();
+        return;
+    }
+
+    const go = confirm(
+        "Wallet Connected\n\nDisconnect Wallet?"
+    );
+
+    if(go){
+        disconnectWallet();
+    }
+}
 // =========================
 // UPDATE WALLET
 // =========================
