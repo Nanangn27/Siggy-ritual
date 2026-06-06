@@ -49,7 +49,13 @@ target.classList.add(
 // =========================
 // WALLET CONNECT
 // =========================
+function openWalletModal(){
+    document.getElementById("walletModal").style.display = "flex";
+}
 
+function closeWalletModal(){
+    document.getElementById("walletModal").style.display = "none";
+}
 async function connectWallet(){
 
 try{
