@@ -1389,3 +1389,41 @@ function shuffleSigil(){
     }
 
 }
+document.addEventListener("click", () => {
+
+    const music =
+    document.getElementById("bgMusic");
+
+    if(music && music.paused){
+
+        music.volume = 0.3;
+
+        music.play().catch(err=>{
+            console.log(err);
+        });
+
+    }
+
+}, { once:true });
+function toggleMusic(){
+
+    const music =
+    document.getElementById("bgMusic");
+
+    if(!music) return;
+
+    if(music.paused){
+
+        music.play();
+
+        document.getElementById("musicBtn").innerText = "🔊";
+
+    }else{
+
+        music.pause();
+
+        document.getElementById("musicBtn").innerText = "🔇";
+
+    }
+
+}
