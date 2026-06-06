@@ -1144,7 +1144,7 @@ The Void Companion
 
 id="walletHeader"
 
-onclick="walletMenu()"
+onclick="openWalletModal()"
 
 style="
 
@@ -2204,7 +2204,36 @@ Long press image to save
 
 
 </div>
+<div id="walletModal" class="wallet-modal">
 
+  <div class="wallet-box">
+
+    <h2>⚡ CONNECT WALLET</h2>
+
+    <button onclick="connectMetaMask()">
+      🦊 MetaMask
+    </button>
+
+    <button onclick="connectRabby()">
+      🐰 Rabby Wallet
+    </button>
+
+    <button onclick="connectOKX()">
+      ⭕ OKX Wallet
+    </button>
+
+    <button onclick="connectWalletConnect()">
+      📱 WalletConnect
+    </button>
+
+    <button class="close-btn"
+      onclick="closeWalletModal()">
+      ❌ Close
+    </button>
+
+  </div>
+
+</div>
 </body>
 
 
