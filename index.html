@@ -1,1390 +1,2301 @@
-// =========================
-// SIGGY FULL APP
-// =========================
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const TREASURY =
-"0x433d4d43afd32a5ea40e875236db26d4c3b7886f";
+<!DOCTYPE html>
 
-let provider = null;
-let signer = null;
-let account = null;
+<html lang="en">
 
-let xp = Number(
-localStorage.getItem(
-"siggy_xp"
-) || 0
+
+
+<head>
+
+
+
+<meta charset="UTF-8">
+
+
+
+<meta name="viewport"
+
+content="width=device-width,initial-scale=1.0">
+
+
+
+<title>SIGGY Ritual • The Void Companion</title>
+
+
+
+<script
+
+src="https://cdn.jsdelivr.net/npm/ethers@6.13.1/dist/ethers.umd.min.js">
+
+</script>
+
+
+
+<script
+
+src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js">
+
+</script>
+<style>
+.wallet-modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.85);
+z-index:99999;
+justify-content:center;
+align-items:center;
+}
+
+.wallet-box{
+width:90%;
+max-width:360px;
+background:#1c082f;
+padding:20px;
+border-radius:20px;
+border:1px solid rgba(177,76,255,.3);
+box-shadow:0 0 30px rgba(177,76,255,.4);
+}
+
+.wallet-box h2{
+color:#fff;
+text-align:center;
+margin-bottom:15px;
+}
+
+.wallet-box button{
+width:100%;
+padding:14px;
+margin:8px 0;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#b14cff,#7a00ff);
+color:#fff;
+font-weight:bold;
+}
+
+.close-btn{
+background:#ff3b5c !important;
+}
+
+
+.send-btn{
+
+  width:100%;
+
+  height:55px;
+
+  border:none;
+
+  border-radius:16px;
+
+  background:linear-gradient(90deg,#7b2cff,#b03cff);
+
+  color:white;
+
+  font-size:18px;
+
+  font-weight:bold;
+
+  margin-top:10px;
+
+  cursor:pointer;
+
+}
+
+
+
+.send-btn:active{
+
+  transform:scale(.98);
+
+}
+
+
+
+*{
+
+  margin:0;
+
+  padding:0;
+
+  box-sizing:border-box;
+
+}
+
+
+
+
+
+
+
+*{
+
+margin:0;
+
+padding:0;
+
+box-sizing:border-box;
+
+font-family:Arial,sans-serif;
+
+}
+
+
+.page{
+
+display:none;
+
+padding:25px 15px;
+
+position:relative;
+
+z-index:1;
+
+}
+
+.page.active{
+
+display:block;
+
+}
+
+.logo{
+
+  width:80px;
+
+  height:80px;
+
+  border-radius:50%;
+
+  filter:drop-shadow(0 0 15px #b14cff);
+
+}
+
+.header-wrap{
+
+display:flex;
+
+align-items:center;
+
+gap:14px;
+
+margin-bottom:15px;
+
+}
+
+
+
+.title{
+
+  margin:0;
+
+  font-size:30px;
+
+  font-weight:bold;
+
+  line-height:1;
+
+  color:#ffffff;
+
+
+
+  text-shadow:
+
+    0 0 5px #ffffff,
+
+    0 0 15px #d18fff,
+
+    0 0 30px #b14cff,
+
+    0 0 60px #7a00ff;
+
+}
+
+
+
+.subtitle{
+
+font-size:14px;
+
+color:#b14cff;
+
+opacity:.9;
+
+margin-top:4px;
+
+letter-spacing:1px;
+
+text-transform:uppercase;
+
+}
+.whiteTitle{
+    color:#ffffff;
+}
+.revoke-btn{
+    background:
+    linear-gradient(
+        90deg,
+        #ff4d6d,
+        #ff1744
+    );
+
+    color:white;
+
+    box-shadow:
+    0 0 15px rgba(255,77,109,.4);
+}
+#profileUpload{
+    color:#ffffff;
+    width:100%;
+    margin-bottom:10px;
+}
+
+#profileUpload::file-selector-button{
+    background:linear-gradient(90deg,#7a00ff,#b14cff);
+    color:#ffffff;
+    border:none;
+    border-radius:8px;
+    padding:10px 15px;
+    margin-right:10px;
+    cursor:pointer;
+}
+.card{
+
+background:
+
+radial-gradient(
+
+circle at center,
+
+rgba(177,76,255,.03) 0%,
+
+rgba(90,20,150,.03) 25%,
+
+rgba(27,8,47,.98) 60%,
+
+#120320 100%
+
 );
 
-// =========================
-// PAGE NAVIGATION
-// =========================
 
-function showPage(id){
 
-document
-.querySelectorAll(".page")
-.forEach(page=>{
+border:1px solid rgba(255,255,255,.08);
 
-page.classList.remove(
-"active"
-);
+border-radius:24px;
 
-});
+padding:12px;
 
-const target =
-document.getElementById(
-id
-);
 
-if(target){
 
-target.classList.add(
-"active"
-);
+max-width:600px;
+
+margin:15px auto;
+
+
+
+position:relative;
+
+overflow:hidden;
+
+
+
+box-shadow:0 0 25px rgba(177,76,255,.12);
+ color:#ffffff;
+}
+#walletQR{
+    display:block;
+    margin:20px auto;
+    background:white;
+    padding:10px;
+    border-radius:12px;
+}
+#shareCard{
+
+    width:100%;
+
+    max-width:500px;
+
+    height:650px;
+
+position:relative;
+overflow:hidden;
+
+    margin:auto;
+
+
+
+border:1px solid rgba(177,76,255,.25);
+
+
+
+box-shadow:
+
+0 0 40px rgba(177,76,255,.20),
+
+0 0 80px rgba(177,76,255,.12),
+
+inset 0 0 25px rgba(177,76,255,.08);
 
 }
 
-}
+#shareCard::before{
 
-// =========================
-// WALLET CONNECT
-// =========================
-function openWalletModal(){
-    document.getElementById("walletModal").style.display = "flex";
-}
+content:"VOID";
 
-function closeWalletModal(){
-    document.getElementById("walletModal").style.display = "none";
-}
-function openAccountModal(){
+position:absolute;
 
-    document.getElementById(
-        "accountText"
-    ).innerText =
-    shorten(account);
+top:55%;
 
-    document.getElementById(
-        "accountModal"
-    ).style.display = "flex";
+left:50%;
 
-}
+transform:translate(-50%,-50%) rotate(-20deg);
 
-function closeAccountModal(){
 
-    document.getElementById(
-        "accountModal"
-    ).style.display = "none";
 
-}
-async function connectWallet(){
+font-size:180px;
 
-try{
+font-weight:bold;
 
-if(!window.ethereum){
+letter-spacing:8px;
 
-alert(
-"Please install OKX Wallet, MetaMask, Rabby, or use Mises Browser"
-);
 
-window.open(
-"https://metamask.io/download/",
-"_blank"
-);
 
-return;
+color:rgba(177,76,255,.12);
+
+pointer-events:none;
 
 }
 
-provider =
-window.ethereum;
+#signaturePad{
 
-const accounts =
-await provider.request({
-  method:
-  "eth_requestAccounts"
-});
+width:100%;
 
-if(!accounts || !accounts.length){
+height:120px;
 
-  alert(
-  "No account returned from wallet. Unlock wallet first."
-  );
+max-width:500px;
 
-  return;
+display:block;
+
+margin-left:auto;
+
+margin-right:auto;
+
+background:#120320;
+
+border:1px solid rgba(255,255,255,.15);
+
+border-radius:12px;
+
+margin-bottom:10px;
+
+touch-action:none;
 
 }
 
-account =
-accounts[0];
-window.ethereum.on(
-"accountsChanged",
-(accounts)=>{
+#siggySeal{
 
-  if(accounts.length){
+text-align:center;
 
-    account = accounts[0];
-    updateWallet();
+font-size:10px;
 
-  }else{
+letter-spacing:3px;
 
-    disconnectWallet();
+color:rgba(217,179,255,.65);
+
+text-transform:uppercase;
+
+margin-top:4px;
+
+margin-bottom:10px;
+
+text-shadow:0 0 10px rgba(177,76,255,.3);
+
+}
+
+.siggy{
+
+width:180px;
+
+display:block;
+
+margin:auto;
+
+margin-bottom:5px;
+
+filter:drop-shadow(0 0 15px rgba(177,76,255,.4));
+
+transition:all .3s ease;
+
+cursor:pointer;
+
+animation:floatSiggy 3s ease-in-out infinite;
+
+-webkit-tap-highlight-color:transparent;
+
+outline:none;
+
+user-select:none;
+
+}
+
+
+
+#shareCard .siggy{
+
+width:120px;
+
+}
+
+@keyframes floatSiggy{
+
+  0%{
+
+    transform:translateY(0px);
 
   }
 
-});
-const walletHeader =
-document.getElementById("walletHeader");
 
-if(walletHeader){
-    walletHeader.innerText =
-    account.slice(0,6) +
-    "..." +
-    account.slice(-4);
-}
-try{
 
-await window.ethereum.request({
-  method:"wallet_switchEthereumChain",
-  params:[{
-    chainId:"0x7bb"
-  }]
-});
+  50%{
 
-}catch(err){
+    transform:translateY(-8px);
 
-console.log(err);
+  }
 
-}
-provider = new ethers.BrowserProvider(window.ethereum);
-signer = await provider.getSigner();
-QRCode.toCanvas(
-document.getElementById("walletQR"),
-account
-);
-alert(account);
 
-updateWallet();
 
-addActivity(
-"Wallet Connected"
-);
+  100%{
 
-}catch(err){
+    transform:translateY(0px);
 
-console.log(err);
-
-alert(
-err.message
-);
+  }
 
 }
 
-}
+.void-particle{
 
-function disconnectWallet(){
+position:fixed;
 
-account = null;
+width:12px;
 
-const addr =
-document.getElementById(
-"walletAddress"
-);
+height:12px;
 
-if(addr){
+border-radius:50%;
 
-addr.innerText =
-"Not Connected";
+background:#b14cff;
 
-}
+pointer-events:none;
 
-const bal =
-document.getElementById(
-"walletBalance"
-);
+z-index:9999;
 
-if(bal){
+box-shadow:0 0 15px #b14cff;
 
-bal.innerText =
-"0 RIT";
-
-}
-const walletHeader =
-document.getElementById("walletHeader");
-
-if(walletHeader){
-    walletHeader.innerText =
-    "Connect Wallet";
-}
-addActivity(
-"Wallet Disconnected"
-);
+animation:voidParticle .7s ease-out forwards;
 
 }
 
 
-    function walletMenu(){
 
-    if(!account){
-        openWalletModal();
-        return;
+@keyframes voidParticle{
+
+0%{
+
+opacity:1;
+
+transform:translate(0,0) scale(1);
+
+}
+
+100%{
+
+opacity:0;
+
+transform:translate(var(--x),var(--y)) scale(0);
+
+}
+
+}
+
+.btn{
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+border-radius:16px;
+
+background:#8f2dff;
+
+color:white;
+
+font-weight:bold;
+
+margin-top:10px;
+
+}
+
+
+
+.feed-grid{
+
+display:grid;
+
+grid-template-columns:1fr 1fr 1fr;
+
+gap:10px;
+
+margin-top:15px;
+
+}
+
+
+
+.feed-btn{
+    padding:14px;
+    border:none;
+    border-radius:16px;
+
+    background:linear-gradient(90deg,#b14cff,#7d22ff);
+
+    color:#ffffff;
+
+    box-shadow:
+        0 0 12px rgba(177,76,255,.5),
+        0 0 25px rgba(177,76,255,.25);
+
+    font-weight:600;
+    letter-spacing:.5px;
+
+    transition:all .15s ease;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+}
+
+button{
+
+transition:all .15s ease;
+
+cursor:pointer;
+
+-webkit-tap-highlight-color:transparent;
+
+}
+
+
+
+button:active{
+    transform:scale(.96);
+    filter:brightness(1.35);
+}
+
+.stats{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:6px;
+
+margin-top:8px;
+
+}
+
+
+
+.stat{
+
+background:#2a1045;
+
+padding:8px;
+
+border-radius:12px;
+
+font-size:14px;
+
+text-align:center;
+
+color:#ffffff;
+
+text-shadow:0 0 8px rgba(177,76,255,.8);
+
+border:1px solid rgba(177,76,255,.15);
+
+
+
+box-shadow:
+
+0 0 15px rgba(177,76,255,.08);
+
+
+
+transition:.3s;
+
+}
+
+
+
+input{
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+border-radius:14px;
+
+background:#2a1045;
+
+color:white;
+
+margin-top:10px;
+
+}
+
+
+
+#profilePreview{
+
+width:90px;
+
+height:90px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+display:block;
+
+margin:auto;
+
+
+
+border:4px solid #b14cff;
+
+
+
+box-shadow:
+
+0 0 20px rgba(177,76,255,.6),
+
+0 0 40px rgba(177,76,255,.3);
+
+}
+
+
+
+.nav{
+
+position:fixed;
+
+bottom:0;
+
+left:0;
+
+right:0;
+
+height:75px;
+
+background:#1c082f;
+
+display:flex;
+
+justify-content:space-around;
+
+align-items:center;
+
+
+
+border-top:1px solid rgba(177,76,255,.25);
+
+box-shadow:0 -5px 25px rgba(177,76,255,.2);
+
+}
+
+
+
+.nav button{
+
+background:none;
+
+border:none;
+
+color:white;
+
+font-size:15px;
+
+
+
+transition:all .2s ease;
+
+}
+
+
+
+.nav button:active{
+
+transform:scale(.9);
+
+color:#b14cff;
+
+text-shadow:0 0 12px #b14cff;
+
+}
+
+
+
+#aiReply{
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.6;
+    font-size: 16px;
+    padding: 12px;
+    text-align: center;
+
+    color:#f5eaff;
+    text-shadow:
+        0 0 8px rgba(177,76,255,.8),
+        0 0 15px rgba(177,76,255,.4);
+
+    font-weight:600;
+}
+
+
+
+
+
+@media (max-width:768px){
+
+  #aiReply{
+
+    font-size:15px;
+
+  }
+
+}
+
+
+
+@media (min-width:769px){
+
+  #aiReply{
+
+    font-size:17px;
+
+    max-width:900px;
+
+    margin:auto;
+
+  }
+
+}
+
+.builtby{
+
+  text-align:center;
+
+  margin:12px 0;
+
+  color:#ccc;
+
+  font-size:14px;
+
+}
+
+
+
+.builtby a{
+
+  color:#b14cff;
+
+  text-decoration:none;
+
+  font-weight:bold;
+
+}
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+
+
+background:url("assets/ritual_logo.png") center center no-repeat;
+
+background-size:280px;
+
+
+
+opacity:0;
+
+pointer-events:none;
+
+z-index:0;
+
+}
+
+
+
+body{
+
+position:relative;
+
+}
+#bg-video{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-2;
+
+filter:
+brightness(.30)
+contrast(1.15)
+saturate(1.3);
+}
+
+@media (max-width:768px){
+
+body::before{
+
+background-position:center 40%;
+
+}
+
+}
+
+
+
+@media (min-width:769px){
+
+body::before{
+
+background-position:center 50%;
+
+background-size:340px;
+
+}
+
+}
+
+@media (min-width:769px){
+
+
+
+.card{
+
+max-width:700px;
+
+margin:auto;
+
+}
+
+
+
+.siggy{
+
+width:300px;
+
+}
+
+
+
+}
+
+.xp-bar{
+
+height:12px;
+
+background:rgba(255,255,255,.08);
+
+border-radius:20px;
+
+overflow:hidden;
+
+margin:10px 0;
+
+}
+
+
+
+#energyBar{
+
+height:100%;
+
+width:80%;
+
+background:linear-gradient(90deg,#7b2cff,#b14cff);
+
+box-shadow:0 0 15px #b14cff;
+
+border-radius:20px;
+
+animation:energyGlow 2s ease-in-out infinite;
+
+}
+
+
+
+@keyframes energyGlow{
+
+0%,100%{
+
+filter:brightness(1);
+
+}
+
+50%{
+
+filter:brightness(1.4);
+
+}
+
+}
+
+.ritual-banner{
+
+    position:fixed;
+
+    width:260px;
+
+    opacity:.08;
+
+    pointer-events:none;
+
+    z-index:0;
+
+}
+
+
+
+.ritual1{
+
+    top:15px;
+
+    left:-300px;
+
+    width:350px;
+
+    opacity:.08;
+
+    animation:ritualMove1 50s linear infinite;
+
+}
+
+
+
+.ritual2{
+
+    display:none;
+
+}
+
+
+
+@keyframes ritualMove1{
+
+    from{transform:translateX(0);}
+
+    to{transform:translateX(calc(100vw + 600px));}
+
+}
+
+
+
+@keyframes ritualMove2{
+
+    from{transform:translateX(0);}
+
+    to{transform:translateX(calc(-100vw - 600px));}
+
+}
+#sigil{
+    text-align:center;
+}
+
+#sigilLogo{
+
+    width:260px;
+    max-width:75vw;
+
+    display:block;
+
+    margin:20px auto 30px auto;
+
+    animation:sigilSpin 6s linear infinite;
+
+    filter:
+    drop-shadow(0 0 25px #b14cff)
+    drop-shadow(0 0 50px rgba(177,76,255,.5));
+
+}
+
+#sigilStatus{
+
+    color:#ffffff;
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    letter-spacing:3px;
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+    text-shadow:
+    0 0 10px rgba(255,255,255,.8),
+    0 0 20px rgba(177,76,255,.8);
+
+}
+
+#sigilConsole{
+
+    text-align:center;
+
+    color:#d9b3ff;
+
+    font-family:monospace;
+
+    font-size:14px;
+
+    line-height:2;
+
+    letter-spacing:1px;
+
+    padding:20px;
+
+}
+
+@keyframes sigilSpin{
+
+    0%{
+        transform:
+        perspective(800px)
+        rotateY(0deg);
     }
 
-    openAccountModal();
+    100%{
+        transform:
+        perspective(800px)
+        rotateY(360deg);
+    }
 
 }
+</style>
 
-function connectMetaMask(){
-    closeWalletModal();
-    connectWallet();
-}
-
-function connectRabby(){
-    closeWalletModal();
-    connectWallet();
-}
-
-function connectOKX(){
-    closeWalletModal();
-    connectWallet();
-}
-
-function connectWalletConnect(){
-    closeWalletModal();
-    alert("WalletConnect Coming Soon");
-}
-// =========================
-// UPDATE WALLET
-// =========================
-
-async function updateWallet(){
-
-if(!account){
-return;
-}
-
-const addr =
-document.getElementById(
-"walletAddress"
-);
-
-if(addr){
-
-addr.innerText =
-shorten(account);
-
-}
-const walletHeader =
-document.getElementById("walletHeader");
-
-if(walletHeader){
-walletHeader.innerText =
-shorten(account);
-}
-try{
-
-const accounts =
-await window.ethereum.request({
-method:"eth_accounts"
-});
-
-if(accounts.length){
-
-const bal =
-document.getElementById(
-"walletBalance"
-);
-
-const balanceHex =
-await window.ethereum.request({
-method:"eth_getBalance",
-params:[
-account,
-"latest"
-]
-});
-
-const balance =
-parseInt(
-balanceHex,
-16
-) / 1e18;
 
-if(bal){
-
-bal.innerText =
-balance.toFixed(4)
-+ " RIT";
-
-}
-
-const share =
-document.getElementById(
-"shareBalance"
-);
-
-if(share){
-
-share.innerText =
-balance.toFixed(4)
-+ " RIT";
-
-}
-
-const txEl =
-document.getElementById(
-"shareTx"
-);
-
-if(txEl){
-const activityEl =
-document.getElementById(
-"shareActivity"
-);
 
-const txHex =
-await window.ethereum.request({
-method:"eth_getTransactionCount",
-params:[
-account,
-"latest"
-]
-});
+</head>
 
-const txCount =
-parseInt(txHex,16);
 
-if(activityEl){
-  activityEl.innerText = Math.floor(txCount / 10) + 1;
-}
 
-txEl.innerText = txCount;
-const xpEl =
-document.getElementById("xpValue");
+<body>
 
-if(xpEl){
-xpEl.innerText = txCount * 100;
-}
-}
+<video id="bg-video" autoplay muted loop playsinline>
 
-}
+  <source src="assets/bg.mp4" type="video/mp4">
 
-}catch(err){
+</video>
 
-console.log(err);
+<img src="assets/ritual-banner.png"
 
-}
+class="ritual-banner ritual1">
 
-}
 
-// =========================
-// SHORT ADDRESS
-// =========================
 
-function shorten(addr){
+<img src="assets/ritual-banner.png"
 
-return (
-addr.slice(0,6)
-+
-"..."
-+
-addr.slice(-4)
-);
+class="ritual-banner ritual2">
 
-}
 
-// =========================
-// MOOD SYSTEM
-// =========================
 
-function setMood(type){
+<div
 
-const siggy =
-document.getElementById(
-"siggyMood"
-);
+id="home"
 
-const share =
-document.getElementById(
-"shareMood"
-);
+class="page active"
 
-if(!siggy){
-return;
-}
-siggy.addEventListener("click",(e)=>{
+>
 
-  createVoidParticles(
-e.clientX,
-e.clientY
-);
 
-});
-const file =
-"assets/siggy_" +
-type +
-".png";
 
-siggy.src = file;
+<div class="header-wrap">
 
-if(share){
-    share.src = file;
-}
-
-const mood =
-document.getElementById(
-"moodText"
-);
-
-if(mood){
-
-const labels = {
-
-idle:
-"Idle Mode",
-
-happy:
-"Happy Mode",
-
-sad:
-"Sad Mode",
 
-chaos:
-"Chaos Mode"
 
-};
+<img
 
-mood.innerText =
-labels[type] ||
-"Idle Mode";
+src="assets/ritual_logo.png"
 
-}
+class="logo"
 
-}
-function playMagicSound(){
-
-const osc1 = audioCtx.createOscillator();
-const osc2 = audioCtx.createOscillator();
-const gain = audioCtx.createGain();
+>
 
-osc1.type = "sine";
-osc2.type = "triangle";
 
-osc1.frequency.setValueAtTime(180, audioCtx.currentTime);
-osc2.frequency.setValueAtTime(360, audioCtx.currentTime);
 
-osc1.frequency.exponentialRampToValueAtTime(
-80,
-audioCtx.currentTime + 0.4
-);
+<div class="title-wrap">
 
-osc2.frequency.exponentialRampToValueAtTime(
-120,
-audioCtx.currentTime + 0.4
-);
 
-gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-gain.gain.exponentialRampToValueAtTime(
-0.001,
-audioCtx.currentTime + 0.5
-);
 
-osc1.connect(gain);
-osc2.connect(gain);
-gain.connect(audioCtx.destination);
+<h2 class="title">
 
-osc1.start();
-osc2.start();
+SIGGY Ritual
 
-osc1.stop(audioCtx.currentTime + 0.5);
-osc2.stop(audioCtx.currentTime + 0.5);
+</h2>
 
-}
-function randomMood(){
-	
-	playMagicSound();
-	
-const moods = [
-"idle",
-"happy",
-"sad",
-"chaos"
-];
 
-const mood =
-moods[Math.floor(Math.random()*moods.length)];
 
-setMood(mood);
-addXP(5);
-addPet();
-const siggy = document.getElementById("siggyMood");
-
-siggy.style.transform = "scale(1.1)";
-siggy.style.filter = "drop-shadow(0 0 15px #b14cff)";
+<div class="subtitle">
 
-setTimeout(() => {
-  siggy.style.transform = "scale(1)";
-  siggy.style.filter = "none";
-}, 300);
-const replies = [
-" Purr...",
-" The Void watches...",
-" Siggy likes that",
-" Chaos is near...",
-" XP +5",
-" *Siggy rubs against you*",
-" Void energy increased",
-" Siggy trusts you more"
-];
+The Void Companion
 
+</div>
 
-document.getElementById("aiReply").innerText =
- replies[Math.floor(Math.random()*replies.length)];
-}
-function addPet(){
 
-  let pets =
-  parseInt(localStorage.getItem("pets") || 0);
 
-  pets++;
+</div>
 
-  localStorage.setItem("pets", pets);
 
-  const petCount =
-  document.getElementById("petCount");
 
-  if(petCount){
-    petCount.innerText =
-    " Pets: " + pets;
-  }
+<div
 
-}
-// =========================
-// FEED SIGGY
-// =========================
-function createVoidParticles(x,y){
+id="walletHeader"
 
-for(let i=0;i<8;i++){
+onclick="walletMenu()"
 
-const p =
-document.createElement("div");
+style="
 
-p.className = "void-particle";
+margin-left:auto;
 
-const dx =
-(Math.random()*120-60)+"px";
+background:linear-gradient(90deg,#b14cff,#7a00ff);
+box-shadow:0 0 15px rgba(177,76,255,.5);
 
-const dy =
-(Math.random()*120-60)+"px";
+padding:8px 14px;
 
-p.style.left = x+"px";
-p.style.top = y+"px";
+border-radius:20px;
 
-p.style.setProperty("--x",dx);
-p.style.setProperty("--y",dy);
+font-size:12px;
 
-document.body.appendChild(p);
+font-weight:bold;
 
-setTimeout(()=>{
-p.remove();
-},700);
+cursor:pointer;
 
-}
+color:white;
 
-}
-async function feedSiggy(amount){
+white-space:nowrap;
 
-if(!account){
-alert("Connect wallet first");
-return;
-}
+">
 
-try{
-const chainId = await window.ethereum.request({
-  method: "eth_chainId"
-});
+Connect Wallet
 
-if(chainId !== "0x7bb"){
-  alert("Please switch to Ritual Network");
-  return;
-}
-const txHash =
-await window.ethereum.request({
-method:"eth_sendTransaction",
-params:[{
-from:account,
-to:TREASURY,
-value:"0x"+Math.floor(
-Number(amount)*1e18
-).toString(16)
-}]
-});
+</div>
 
-addActivity(
-"TX: "+txHash.slice(0,10)
-);
+</div>
 
-randomMood();
 
-addXP(25);
 
-localStorage.setItem(
-"last_feed",
-Date.now()
-);
+<div
 
-addActivity(
-"Fed Siggy "+amount+" RIT"
-);
+class="card"
 
-let txCount =
-parseInt(
-localStorage.getItem("txCount") || 0
-);
+>
 
-txCount++;
 
-localStorage.setItem(
-"txCount",
-txCount
-);
 
-await updateWallet();
+<img
 
-alert(
-"Feed success\n\n"+txHash
-);
+id="siggyMood"
 
-}catch(err){
+src="assets/siggy_idle.png"
 
-alert(err.message);
+class="siggy"
 
-}
+onclick="randomMood()"
 
-}
+>
 
-// =========================
-// XP SYSTEM
-// =========================
 
-function addXP(value){
 
-xp += value;
+<h2 style="
+text-align:center;
+color:#ffffff;
+text-shadow:
+0 0 10px rgba(255,255,255,.8),
+0 0 20px rgba(177,76,255,.8),
+0 0 35px rgba(177,76,255,.4);
+">
+Void Siggy
+</h2>
 
-localStorage.setItem(
 
-"siggy_xp",
 
-xp
+<div style="
 
-);
+text-align:center;
 
-const el =
-document.getElementById(
-"xpValue"
-);
+color:#f5eaff;
 
-if(el){
+font-size:13px;
 
-el.innerText =
-xp;
+font-weight:bold;
 
-}
+letter-spacing:4px;
 
-}
+text-transform:uppercase;
 
-function getLevel(){
+text-shadow:
+0 0 8px rgba(255,255,255,.8),
+0 0 15px rgba(177,76,255,.8),
+0 0 30px rgba(177,76,255,.4);
 
-return Math.floor(
-xp / 100
-) + 1;
+margin-top:5px;
 
-}
+">
 
-// =========================
-// ACTIVITY SYSTEM
-// =========================
+VOID WALKER
 
-function addActivity(text){
+</div>
 
-let items =
-JSON.parse(
 
-localStorage.getItem(
-"siggy_activity"
-)
 
-||
+<div style="
 
-"[]"
+width:70px;
 
-);
+height:2px;
 
-items.unshift({
+background:#b14cff;
 
-text:text,
+margin:10px auto 15px auto;
 
-time:new Date()
-.toLocaleString()
+box-shadow:0 0 15px #b14cff;
 
-});
+"></div>
 
-items =
-items.slice(0,10);
+<p
 
-localStorage.setItem(
+id="moodText"
 
-"siggy_activity",
+style="
 
-JSON.stringify(items)
+text-align:center;
 
-);
+color:#d9b3ff;
 
-renderActivity();
+font-size:13px;
 
-}
+font-style:italic;
 
-function renderActivity(){
+opacity:.9;
 
-const wrap =
-document.getElementById(
-"recentActivity"
-);
+"
 
-if(!wrap){
-return;
-}
+>
 
-const items =
-JSON.parse(
+Idle Mode
 
-localStorage.getItem(
-"siggy_activity"
-)
+</p>
 
-||
+<p
+id="petCount"
 
-"[]"
+style="
+text-align:center;
+color:#ffffff;
+text-shadow:0 0 10px rgba(177,76,255,.6);
+"
+>
 
-);
+🐾 Pets: 0
 
-if(items.length===0){
+</p>
 
-wrap.innerHTML =
-"No recent activity";
+<div id="aiReply">
 
-return;
+✨ The Void watches...
 
-}
+</div>
 
-wrap.innerHTML =
-items.map(item=>`
+<div
 
-<div class="activity-item"><strong>
-${item.text}
-</strong><br><small>
-${item.time}
-</small></div>`).join("");
+class="feed-grid"
 
-}
+>
 
-// =========================
-// LOCAL STORAGE
-// =========================
 
-function saveData(){
 
-localStorage.setItem(
+<button
 
-"siggy_xp",
+class="feed-btn"
 
-xp
+onclick="feedSiggy('0.0001')"
 
-);
+>
 
-}
+Snack
 
-function loadData(){
+</button>
 
-xp = Number(
 
-localStorage.getItem(
-"siggy_xp"
-)
 
-||
+<button
+
+class="feed-btn"
+
+onclick="feedSiggy('0.005')"
+
+>
+
+Feast
+
+</button>
+
+
+
+<button
+
+class="feed-btn"
+
+onclick="feedSiggy('0.001')"
+
+>
+
+Chaos
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+<div id="siggyChat">
+
+  <input id="aiInput" placeholder="Ask SIGGY anything...">
+
+  <button class="send-btn" onclick="askSiggy()">
+
+    Send
+
+  </button>
+
+</div>
+
+</div>
+
+<!-- WALLET -->
+
+
+
+<div
+
+id="wallet"
+
+class="page"
+
+>
+
+
+
+<h2 style="color:#ffffff;">
+Wallet
+</h2>
+
+
+
+<div
+
+class="card"
+
+>
+
+
+
+<h3
+id="walletAddress"
+style="
+text-align:center;
+color:#ffffff;
+text-shadow:0 0 10px rgba(177,76,255,.8);
+margin-bottom:8px;
+"
+>
+Not Connected
+</h3>
+
+
+
+<h1
+id="walletBalance"
+style="
+text-align:center;
+color:#ffffff;
+text-shadow:0 0 20px rgba(177,76,255,.8);
+"
+>
+0 RIT
+</h1>
+
+<canvas id="walletQR"></canvas>
+
+
+<input
+
+id="sendAddress"
+
+placeholder="Receiver Address">
+
+<input
+
+id="sendAmount"
+
+placeholder="Amount RITUAL">
+
+
+
+<button
+
+class="btn"
+
+onclick="sendRIT()">
+
+Send RITUAL
+
+</button>
+
+
+
+<button
+
+class="btn"
+
+onclick="copyAddress()">
+
+Copy Wallet Address
+
+</button>
+
+
+
+</div>
+
+
+
+<div
+
+class="card"
+
+>
+
+
+
+<h3 style="color:#ffffff !important;
+text-shadow:0 0 10px rgba(177,76,255,.6);">
+Recent Activity
+</h3>
+
+
+
+<div
+id="recentActivity"
+style="color:#f5eaff !important;"
+>
+No recent activity
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+<!-- SHARE -->
+
+<div id="sigil" class="page">
+
+    <div class="card">
+
+        <img
+        id="sigilLogo"
+        src="assets/logo-game.png">
+
+        <h2 id="sigilStatus">
+            SIGIL CORE
+        </h2>
+
+        <div id="sigilConsole">
+
+            <div>Protocol Version v1.0</div>
+
+            <br>
+
+            <div>Agent State ONLINE</div>
+            <div>Memory State IMMORTAL</div>
+            <div>Inference State ACTIVE</div>
+            <div>Identity State VERIFIED</div>
+
+            <br>
+
+            <div>Compute Sovereignty ENABLED</div>
+            <div>Financial Sovereignty ENABLED</div>
+            <div>Agent Coordination ACTIVE</div>
+            <div>Future Intelligence DETECTED</div>
+
+            <br>
+
+            <div>Signal Strength 100%</div>
+            <div>Network Integrity VERIFIED</div>
+            <div>Access Tier EARLY</div>
+
+            <br>
+
+            <div>MISSION</div>
+            <div>THINK • SEE • HEAR • ACT</div>
+
+            <br>
+
+            <div>STATUS</div>
+            <div>EARLY TO EVERYTHING</div>
+
+        </div>
+
+    </div>
+
+</div>
+<div
+id="share"
+
+class="page"
+
+>
+
+
+
+<h2 style="
+text-align:center;
+color:#ffffff;
+text-shadow:0 0 15px rgba(177,76,255,.8);
+">
+Void Siggy Card
+</h2>
+
+
+
+<div
+
+id="shareCard"
+
+class="card"
+
+>
+
+<div style="
+
+position:absolute;
+
+top:15px;
+
+right:15px;
+
+background:linear-gradient(45deg,#b14cff,#7a00ff);
+
+padding:6px 12px;
+
+border-radius:999px;
+
+font-size:10px;
+
+font-weight:bold;
+
+color:white;
+
+box-shadow:0 0 15px rgba(177,76,255,.5);
+
+">
+
+LEGENDARY
+
+</div>
+
+<img
+
+src="assets/ritual_logo.png"
+
+class="logo"
+
+>
+
+
+
+<img
+
+id="shareMood"
+
+src="assets/siggy_idle.png"
+
+class="siggy"
+
+>
+
+
+
+<h3 style="
+text-align:center;
+color:#ffffff;
+text-shadow:0 0 15px rgba(177,76,255,.8);
+">
+Void Siggy
+</h3>
+
+
+
+<img
+
+id="profilePreview"
+
+src="assets/default-avatar.png"
+
+style="
+
+width:80px;
+
+height:80px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+display:block;
+
+margin:10px auto;
+
+">
+
+
+
+<h4
+
+id="shareUsername"
+
+style="
+
+text-align:center;
+
+color:#ffffff;
+
+font-size:22px;
+
+font-weight:bold;
+
+letter-spacing:1px;
+
+text-shadow:
+
+0 0 10px rgba(177,76,255,.8),
+
+0 0 25px rgba(177,76,255,.4);
+
+"
+
+>
+
+Username
+
+</h4>
+
+
+
+<div
+
+class="stats"
+
+>
+
+
+
+<div
+
+class="stat"
+
+>
+
+XP
+
+<br>
+
+<span id="xpValue">
 
 0
 
-);
+</span>
 
-renderActivity();
+</div>
 
-}
 
-// =========================
-// PROFILE UPLOAD
-// =========================
 
-function initProfileUpload(){
+<div
 
-const upload =
-document.getElementById(
-"profileUpload"
+class="stat"
 
-);
+>
 
-if(!upload){
-return;
-}
+BALANCE
 
-upload.addEventListener(
+<br>
 
-"change",
+<span id="shareBalance">
 
-function(e){
+0 RIT
 
-const file =
-e.target.files[0];
+</span>
 
-if(!file){
-return;
-}
+</div>
 
-const reader =
-new FileReader();
 
-reader.onload =
-function(){
 
-localStorage.setItem(
-"siggy_pfp",
-reader.result
-);
+<div
 
-const preview =
-document.getElementById(
-"profilePreview"
-);
+class="stat"
 
-if(preview){
-  preview.src = reader.result;
-}
+>
 
-};
+TX OUT
 
-reader.readAsDataURL(
-file
-);
+<br>
 
-}
+<span id="shareTx">
 
-);
+0
 
-}
+</span>
 
-// =========================
-// USERNAME SYNC
-// =========================
+</div>
 
-function initUsername(){
 
-const username =
-document.getElementById(
-"username"
-);
 
-if(!username){
-return;
-}
+<div
 
-const saved =
-localStorage.getItem(
-"siggy_username"
-);
+class="stat"
 
-if(saved){
+>
 
-username.value =
-saved;
+SIGGY LVL
 
-const share =
-document.getElementById(
-"shareUsername"
-);
+<br>
 
-if(share){
+<span id="shareActivity">
 
-share.innerText =
-saved;
+0
 
-}
-}
+</span>
 
-username.addEventListener(
+</div>
 
-"input",
 
-function(){
 
-localStorage.setItem(
+</div>
 
-"siggy_username",
 
-this.value
 
-);
+</div>
 
-const share =
-document.getElementById(
-"shareUsername"
-);
 
-if(share){
 
-share.innerText =
-this.value ||
-"Username";
+<input
 
-}
+id="username"
 
-}
+placeholder="Enter Username..."
 
-);
+>
 
-}
 
-// =========================
-// SAVE CARD
-// =========================
 
-function saveCard(){
+<input
 
-const card =
-document.getElementById(
-"shareCard"
-);
-const usernameInput =
-document.getElementById("username");
+type="file"
 
-const shareUsername =
-document.getElementById("shareUsername");
+id="profileUpload"
 
-if(usernameInput && shareUsername){
-  shareUsername.innerText =
-  usernameInput.value || "Username";
-}
-if(!card){
+accept="image/*"
 
-alert(
-"Share card not found"
-);
+>
 
-return;
 
-}
-const signaturePad =
-document.getElementById("signaturePad");
 
-const oldSignature =
-document.getElementById("savedSignature");
+<h3 class="whiteTitle">Signature</h3>
 
-if(oldSignature){
-oldSignature.remove();
-}
 
-const signatureImg =
-document.createElement("img");
 
-signatureImg.id = "savedSignature";
-signatureImg.src =
-signaturePad.toDataURL("image/png");
+<canvas
 
-signatureImg.style.width = "180px";
-signatureImg.style.height = "70px";
+id="signaturePad"
 
-signatureImg.style.display = "block";
-signatureImg.style.margin = "15px auto";
+width="500"
 
-card.appendChild(signatureImg);
-const savedPfp = localStorage.getItem("siggy_pfp");
+height="120">
 
-htmlToImage.toPng(card,{
-  width:500,
-  height:650,
-  canvasWidth:500,
-  canvasHeight:650,
-  pixelRatio:2,
-  backgroundColor:"#120021",
-  style:{
-    margin:"0",
-    transform:"none",
-    left:"0",
-    right:"0"
-  }
-  }
-)
-.then(function(dataUrl){
-if(window.ethereum){
+</canvas>
 
-document.getElementById(
-"previewImage"
-).src = dataUrl;
 
-document.getElementById(
-"imagePreviewModal"
-).style.display = "block";
 
-signatureImg.remove();
+<div id="siggySeal">
 
-return;
+POWERED BY SIGGY RITUAL
 
-}
+</div>
 
-else{
 
-const link =
-document.createElement(
-"a"
-);
 
-link.download =
-"siggy-card.png";
+<button class="btn" onclick="clearSignature()">
 
-link.href =
-dataUrl;
+Clear Signature
 
-link.click();
+</button>
 
-}
 
-signatureImg.remove();
 
-})
+<button
 
-.catch(function(err){
+class="btn"
 
-console.log(err);
+onclick="saveCard()"
 
-alert(err.message);
+>
 
-});
+Save Image
 
-}
+</button>
 
-// =========================
-// STARTUP
-// =========================
 
-document.addEventListener(
 
-"DOMContentLoaded",
+</div>
 
-function(){
 
-loadData();
 
-initProfileUpload();
+<!-- SETTINGS -->
 
-initUsername();
 
-const pfp =
-localStorage.getItem("siggy_pfp");
-if(pfp){
 
-const preview =
-document.getElementById(
-"profilePreview"
-);
+<div
 
-if(preview){
-  preview.src = pfp;
-}
+id="settings"
 
-}
+class="page"
 
+>
 
-if(!pfp){
-  setMood("idle");
-}
 
-console.log(
-"SIGGY FULL READY"
-);
 
-}
+<h2>⚙️ SIGGY SETTINGS</h2>
 
-);
+<p class="subtitle">Manage the Void Companion</p>
 
-// =========================
-// ERROR LOGGER
-// =========================
 
-window.onerror =
-function(msg){
 
-console.log(
-"SIGGY ERROR:",
-msg
-);
+<div
 
-};
-async function askSiggy() {
+class="card"
 
+>
 
-const question =
-document.getElementById("aiInput").value;
 
-const replyEl =
-document.getElementById("aiReply");
 
-  replyEl.innerText = "✨ Generating response...";
+<h3>
 
-  try {
+Current Level
 
+</h3>
 
-const res = await fetch(
-"https://siggy-ai.na2ng1000.workers.dev/",
-{
-method: "POST",
-headers: {
-"Content-Type": "application/json"
-},
-body: JSON.stringify({
-message: question
-})
-}
-);
 
 
-      
+<p id="levelValue">
 
-    const data = await res.json();
+1
 
-replyEl.innerText = data.reply;
+</p>
 
-  } catch(err) {
 
 
-replyEl.innerText =
-"ERROR: " + err.message;
+<br>
 
-console.log(err);
 
-  }
-  }
-  const canvas = document.getElementById("signaturePad");
 
-if(canvas){
+<h3>
 
-const ctx = canvas.getContext("2d");
+Current XP
 
-let drawing = false;
+</h3>
 
-canvas.addEventListener("mousedown", () => {
-drawing = true;
-});
 
-canvas.addEventListener("mouseup", () => {
-drawing = false;
-ctx.beginPath();
-});
-canvas.addEventListener("touchstart", (e) => {
-e.preventDefault();
-drawing = true;
-});
 
-canvas.addEventListener("touchend", (e) => {
-e.preventDefault();
-drawing = false;
-ctx.beginPath();
-});
-canvas.addEventListener("mousemove", (e) => {
+<p id="xpInfo">
 
-if(!drawing) return;
+0
 
-const rect = canvas.getBoundingClientRect();
+</p>
 
-ctx.lineWidth = 4;
-ctx.strokeStyle = "#fff";
-ctx.lineCap = "round";
 
-ctx.lineTo(
-e.clientX - rect.left,
-e.clientY - rect.top
-);
 
-ctx.stroke();
+<br>
 
-ctx.beginPath();
 
-ctx.moveTo(
-e.clientX - rect.left,
-e.clientY - rect.top
-);
 
-});
-canvas.addEventListener("touchmove", (e) => {
+<h3>
 
-e.preventDefault();
+Current Mood
 
-if(!drawing) return;
+</h3>
 
-const rect = canvas.getBoundingClientRect();
-const touch = e.touches[0];
 
-ctx.lineWidth = 2;
-ctx.strokeStyle = "#fff";
-ctx.lineCap = "round";
 
-ctx.lineTo(
-touch.clientX - rect.left,
-touch.clientY - rect.top
-);
+<p id="moodInfo">
 
-ctx.stroke();
+Idle
 
-ctx.beginPath();
+</p>
 
-ctx.moveTo(
-touch.clientX - rect.left,
-touch.clientY - rect.top
-);
 
-});
-window.clearSignature = function(){
-ctx.clearRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
-};
 
-}
-async function sendRIT(){
+<br>
 
-try{
 
-if(!signer){
-alert("Connect wallet first");
-return;
-}
 
-const to =
-document.getElementById("sendAddress").value.trim();
+<h3>🔮 Void Energy</h3>
 
-const amount =
-document.getElementById("sendAmount").value.trim();
+<div class="xp-bar">
 
-if(!to || !amount){
-alert("Fill address and amount");
-return;
-}
+<div id="energyBar" style="width:80%"></div>
 
-const tx =
-await signer.sendTransaction({
-to: to,
-value: ethers.parseEther(amount)
-});
+</div>
 
-alert(
-"Transaction Sent\n\n" +
-tx.hash
-);
 
-await tx.wait();
 
-updateWallet();
+<button
 
-addActivity(
-"Sent " + amount + " RITUAL"
-);
+class="btn"
 
-}catch(err){
+onclick="randomMood()"
 
-console.log(err);
+>
 
-alert(err.message);
+Random Mood
 
-}
+</button>
 
-}
-function copyAddress(){
+<div class="card">
 
-if(!account){
-alert("Connect wallet first");
-return;
-}
 
-navigator.clipboard.writeText(account);
 
-alert("Wallet address copied");
+<h3>Siggy Name</h3>
 
-}
-function saveSettings(){
+<input id="siggyName" placeholder="Void Siggy">
 
-localStorage.setItem(
-"siggyName",
-document.getElementById("siggyName").value
-);
-document.getElementById("shareUsername").innerText =
-document.getElementById("siggyName").value;
 
-const mood =
-document.getElementById("defaultMood").value;
 
-const shareMood =
-document.getElementById("shareMood");
+<h3>Default Mood</h3>
 
-if(shareMood){
+<select id="defaultMood">
 
-if(mood === "Happy"){
-shareMood.src = "assets/siggy_happy.png";
-}
-else if(mood === "Sad"){
-shareMood.src = "assets/siggy_sad.png";
-}
-else if(mood === "Chaos"){
-shareMood.src = "assets/siggy_chaos.png";
-}
-else{
-shareMood.src = "assets/siggy_idle.png";
-}
+<option>Idle</option>
 
-}
-const username =
-document.getElementById("shareUsername");
+<option>Happy</option>
 
-if(username){
-username.innerText =
-document.getElementById("siggyName").value;
-}
-alert("Settings Saved");
-}
-function openRevoke(){
+<option>Sad</option>
 
-    const go = confirm(
-        "⚠️ Void Security Check\n\nOpen Revoke.cash to review active token approvals?"
-    );
+<option>Chaos</option>
 
-    if(go){
-        window.open(
-            "https://revoke.cash",
-            "_blank"
-        );
-    }
+</select>
 
-}
-function shuffleSigil(){
 
-    const status =
-    document.getElementById(
-        "sigilStatus"
-    );
 
-    if(status){
-        status.innerText =
-        "✨ Ritual Beginning...";
-    }
+<button
 
-}
+class="btn"
+
+onclick="saveSettings()">
+
+Save Settings
+
+</button>
+
+<button
+class="btn"
+onclick="openRevoke()">
+🔒 Revoke Approvals
+</button>
+
+</div>
+
+</div>
+
+
+
+</div>
+
+
+
+<!-- NAVIGATION -->
+
+<div class="builtby">
+
+  ⚡ Built by
+
+  <a href="https://x.com/Nanangn27" target="_blank">
+
+    N G
+
+  </a>
+
+</div>
+
+<div
+
+class="nav"
+
+>
+
+
+
+<button
+
+onclick="showPage('home')"
+
+>
+
+Home
+
+</button>
+
+
+
+<button
+
+onclick="showPage('wallet')"
+
+>
+
+Wallet
+
+</button>
+
+<button
+
+onclick="showPage('sigil')"
+
+>
+
+Sigil
+
+</button>
+
+<button
+
+onclick="showPage('share')"
+
+>
+
+Share
+
+</button>
+
+
+
+<button
+
+onclick="showPage('settings')"
+
+>
+
+Settings
+
+</button>
+
+
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.1/dist/ethers.umd.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+
+
+<script src="app.js"></script>
+
+<div id="imagePreviewModal"
+
+style="
+
+display:none;
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+background:rgba(0,0,0,.9);
+
+z-index:9999;
+
+text-align:center;
+
+">
+
+
+
+<img
+
+id="previewImage"
+
+onclick="window.open(this.src,'_blank')"
+
+style="
+
+max-width:95%;
+
+max-height:80%;
+
+margin-top:40px;
+
+">
+
+
+
+<br><br>
+
+
+
+<button
+
+class="btn"
+
+onclick="document.getElementById('imagePreviewModal').style.display='none';">
+
+Close
+
+</button>
+
+<button
+
+class="btn"
+
+onclick="
+
+const a=document.createElement('a');
+
+a.href=document.getElementById('previewImage').src;
+
+a.download='siggy-card.png';
+
+a.click();
+
+">
+
+Download Image
+
+</button>
+
+<p style="color:white">
+
+Long press image to save
+
+</p>
+
+
+
+</div>
+<div id="walletModal" class="wallet-modal">
+
+  <div class="wallet-box">
+
+    <h2>⚡ CONNECT WALLET</h2>
+
+    <button onclick="connectMetaMask()">
+      🦊 MetaMask
+    </button>
+
+    <button onclick="connectRabby()">
+      🐰 Rabby Wallet
+    </button>
+
+    <button onclick="connectOKX()">
+      ⭕ OKX Wallet
+    </button>
+
+    <button onclick="connectWalletConnect()">
+      📱 WalletConnect
+    </button>
+
+    <button class="close-btn"
+      onclick="closeWalletModal()">
+      ❌ Close
+    </button>
+
+</div>
+
+</div>
+
+<div id="accountModal" class="wallet-modal">
+
+  <div class="wallet-box">
+
+    <h2>Connected Wallet</h2>
+
+    <p id="accountText"
+    style="
+    color:white;
+    text-align:center;
+    margin:20px 0;
+    font-size:18px;
+    font-weight:bold;
+    ">
+    </p>
+
+    <button class="close-btn"
+    onclick="disconnectWallet()">
+      Disconnect
+    </button>
+
+  </div>
+
+</div>
+
+</body>
+</html>
