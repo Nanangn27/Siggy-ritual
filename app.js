@@ -203,7 +203,7 @@ addActivity(
 function walletMenu(){
 
     if(!account){
-        connectWallet();
+        openWalletModal();
         return;
     }
 
@@ -214,6 +214,25 @@ function walletMenu(){
     if(go){
         disconnectWallet();
     }
+}
+function connectMetaMask(){
+    closeWalletModal();
+    connectWallet();
+}
+
+function connectRabby(){
+    closeWalletModal();
+    connectWallet();
+}
+
+function connectOKX(){
+    closeWalletModal();
+    connectWallet();
+}
+
+function connectWalletConnect(){
+    closeWalletModal();
+    alert("WalletConnect Coming Soon");
 }
 // =========================
 // UPDATE WALLET
