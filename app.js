@@ -56,6 +56,26 @@ function openWalletModal(){
 function closeWalletModal(){
     document.getElementById("walletModal").style.display = "none";
 }
+function openAccountModal(){
+
+    document.getElementById(
+        "accountText"
+    ).innerText =
+    shorten(account);
+
+    document.getElementById(
+        "accountModal"
+    ).style.display = "flex";
+
+}
+
+function closeAccountModal(){
+
+    document.getElementById(
+        "accountModal"
+    ).style.display = "none";
+
+}
 async function connectWallet(){
 
 try{
@@ -200,21 +220,19 @@ addActivity(
 );
 
 }
-function walletMenu(){
+
+
+    function walletMenu(){
 
     if(!account){
         openWalletModal();
         return;
     }
 
-    const go = confirm(
-        "Wallet Connected\n\nDisconnect Wallet?"
-    );
+    openAccountModal();
 
-    if(go){
-        disconnectWallet();
-    }
 }
+
 function connectMetaMask(){
     closeWalletModal();
     connectWallet();
