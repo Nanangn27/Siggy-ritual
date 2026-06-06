@@ -215,6 +215,7 @@ if(walletHeader){
     walletHeader.innerText =
     "Connect Wallet";
 }
+closeAccountModal();
 addActivity(
 "Wallet Disconnected"
 );
