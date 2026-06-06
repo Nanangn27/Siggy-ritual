@@ -1181,7 +1181,7 @@ The Void Companion
 
 id="walletHeader"
 
-onclick="openWalletModal()"
+onclick="walletMenu()"
 
 style="
 
@@ -2268,11 +2268,36 @@ Long press image to save
       ❌ Close
     </button>
 
+</div>
+
+</div>
+
+<div id="accountModal" class="wallet-modal">
+
+  <div class="wallet-box">
+
+    <h2>Connected Wallet</h2>
+
+    <p id="accountText"
+    style="
+    color:white;
+    text-align:center;
+    margin:20px 0;
+    font-size:18px;
+    font-weight:bold;
+    ">
+    </p>
+
+    <button class="close-btn"
+    onclick="disconnectWallet()">
+      Disconnect
+    </button>
+
   </div>
 
 </div>
-</body>
 
+</body>
 
 
 </html>
