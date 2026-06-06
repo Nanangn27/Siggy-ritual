@@ -1207,8 +1207,26 @@ white-space:nowrap;
 ">
 
 Connect Wallet
-
 </div>
+<button
+id="musicBtn"
+onclick="toggleMusic()"
+style="
+position:fixed;
+top:25px;
+right:15px;
+z-index:99999;
+width:45px;
+height:45px;
+border:none;
+border-radius:50%;
+background:linear-gradient(90deg,#b14cff,#7a00ff);
+color:white;
+font-size:20px;
+box-shadow:0 0 15px rgba(177,76,255,.6);
+">
+🎵
+</button>
 
 </div>
 
@@ -2237,6 +2255,8 @@ Long press image to save
   </div>
 
 </div>
-
+<audio id="bgMusic" loop preload="auto">
+    <source src="assets/bg-music.mp3" type="audio/mpeg">
+</audio>
 </body>
 </html>
