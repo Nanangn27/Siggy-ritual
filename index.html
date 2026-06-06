@@ -35,13 +35,50 @@ src="https://cdn.jsdelivr.net/npm/ethers@6.13.1/dist/ethers.umd.min.js">
 src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js">
 
 </script>
-
-
-
-
-
 <style>
+.wallet-modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.85);
+z-index:99999;
+justify-content:center;
+align-items:center;
+}
 
+.wallet-box{
+width:90%;
+max-width:360px;
+background:#1c082f;
+padding:20px;
+border-radius:20px;
+border:1px solid rgba(177,76,255,.3);
+box-shadow:0 0 30px rgba(177,76,255,.4);
+}
+
+.wallet-box h2{
+color:#fff;
+text-align:center;
+margin-bottom:15px;
+}
+
+.wallet-box button{
+width:100%;
+padding:14px;
+margin:8px 0;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#b14cff,#7a00ff);
+color:#fff;
+font-weight:bold;
+}
+
+.close-btn{
+background:#ff3b5c !important;
+}
 
 
 .send-btn{
