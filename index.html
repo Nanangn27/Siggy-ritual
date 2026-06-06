@@ -990,26 +990,63 @@ filter:brightness(1.4);
     to{transform:translateX(calc(-100vw - 600px));}
 
 }
-#sigilPage{
+#sigil{
     text-align:center;
-    padding-top:50px;
 }
 
 #sigilLogo{
-    width:220px;
-    max-width:70vw;
+
+    width:260px;
+    max-width:75vw;
+
+    display:block;
+
+    margin:20px auto 30px auto;
 
     animation:sigilSpin 6s linear infinite;
 
-    filter:drop-shadow(0 0 25px #b14cff);
+    filter:
+    drop-shadow(0 0 25px #b14cff)
+    drop-shadow(0 0 50px rgba(177,76,255,.5));
+
 }
 
 #sigilStatus{
-    color:white;
-    margin-top:25px;
-    font-size:22px;
 
-    text-shadow:0 0 15px rgba(177,76,255,.8);
+    color:#ffffff;
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    letter-spacing:3px;
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+    text-shadow:
+    0 0 10px rgba(255,255,255,.8),
+    0 0 20px rgba(177,76,255,.8);
+
+}
+
+#sigilConsole{
+
+    text-align:center;
+
+    color:#d9b3ff;
+
+    font-family:monospace;
+
+    font-size:14px;
+
+    line-height:2;
+
+    letter-spacing:1px;
+
+    padding:20px;
+
 }
 
 @keyframes sigilSpin{
@@ -1472,17 +1509,49 @@ No recent activity
         id="sigilLogo"
         src="assets/logo-game.png">
 
-</p>
-        <h2 id="sigilStatus">
-            The Sigil Awakens...
-        </h2>
+<h2 id="sigilStatus">
+    SIGIL CORE
+</h2>
 
-    </div>
+<div id="sigilConsole">
+
+    <div>Protocol Version v1.0</div>
+
+    <br>
+
+    <div>Agent State ONLINE</div>
+    <div>Memory State IMMORTAL</div>
+    <div>Inference State ACTIVE</div>
+    <div>Identity State VERIFIED</div>
+
+    <br>
+
+    <div>Compute Sovereignty ENABLED</div>
+    <div>Financial Sovereignty ENABLED</div>
+    <div>Agent Coordination ACTIVE</div>
+    <div>Future Intelligence DETECTED</div>
+
+    <br>
+
+    <div>Signal Strength 100%</div>
+    <div>Network Integrity VERIFIED</div>
+    <div>Access Tier EARLY</div>
+
+    <br>
+
+    <div>MISSION</div>
+    <div>THINK • SEE • HEAR • ACT</div>
+
+    <br>
+
+    <div>STATUS</div>
+    <div>EARLY TO EVERYTHING</div>
 
 </div>
 
-<div
+</div>
 
+</div>
 id="share"
 
 class="page"
